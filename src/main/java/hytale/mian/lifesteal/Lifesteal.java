@@ -1,54 +1,36 @@
 package hytale.mian.lifesteal;
 
-/**
- * Main plugin class.
- * 
- * TODO: Implement your plugin logic here.
- * 
- * @author YourName
- * @version 1.0.0
- */
-public class Lifesteal {
+import com.hypixel.hytale.builtin.crafting.CraftingPlugin;
+import com.hypixel.hytale.builtin.hytalegenerator.LoggerUtil;
+import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
+import com.hypixel.hytale.server.core.plugin.JavaPlugin;
+import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.util.Config;
+import hytale.mian.lifesteal.storage.LSComponent;
+import hytale.mian.lifesteal.storage.LSComponents;
+import hytale.mian.lifesteal.systems.LSSystem;
+import hytale.mian.lifesteal.systems.PlayerKilledPlayer;
+import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-    private static Lifesteal instance;
-    
-    /**
-     * Constructor - Called when plugin is loaded.
-     */
-    public Lifesteal() {
-        instance = this;
-        System.out.println("[TemplatePlugin] Plugin loaded!");
+import java.util.logging.Logger;
+
+public class Lifesteal extends JavaPlugin {
+    public static final Logger LOGGER = Logger.getLogger("Lifesteal");
+    private final Config<LSConfig> config;
+
+    public Lifesteal(@NonNullDecl JavaPluginInit init) {
+        super(init);
+        config = this.withConfig("Lifesteal", LSConfig.CODEC);
     }
-    
-    /**
-     * Called when plugin is enabled.
-     */
-    public void onEnable() {
-        System.out.println("[TemplatePlugin] Plugin enabled!");
-        
-        // TODO: Initialize your plugin here
-        // - Load configuration
-        // - Register event listeners
-        // - Register commands
-        // - Start services
-    }
-    
-    /**
-     * Called when plugin is disabled.
-     */
-    public void onDisable() {
-        System.out.println("[TemplatePlugin] Plugin disabled!");
-        
-        // TODO: Cleanup your plugin here
-        // - Save data
-        // - Stop services
-        // - Close connections
-    }
-    
-    /**
-     * Get plugin instance.
-     */
-    public static Lifesteal getInstance() {
-        return instance;
+
+    @Override
+    protected void setup() {
+        LOGGER.info("In the process of stealing your soul!");
+
+        super.setup();
+        new LSComponents(this);
+        this.getEntityStoreRegistry().registerSystem(new LSSystem(config));
+        this.getEntityStoreRegistry().registerSystem(new PlayerKilledPlayer(config));
+        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, (event) -> event.getPlayerRef().getStore().addComponent(event.getPlayerRef(), LSComponent.getComponentType()));
     }
 }

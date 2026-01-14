@@ -64,7 +64,7 @@ open class RunServerTask : DefaultTask() {
     fun run() {
         // Create directories
         val runDir = File(project.projectDir, "run").apply { mkdirs() }
-        val pluginsDir = File(runDir, "plugins").apply { mkdirs() }
+        val modsDir = File(runDir, "mods").apply { mkdirs() }
         val jarFile = File(runDir, "server.jar")
         val cachedJar = File(jarPath.get(), "HytaleServer.jar")
 
@@ -74,7 +74,7 @@ open class RunServerTask : DefaultTask() {
 
         // Copy plugin JAR to plugins folder
         project.tasks.findByName("shadowJar")?.outputs?.files?.firstOrNull()?.let { shadowJar ->
-            val targetFile = File(pluginsDir, shadowJar.name)
+            val targetFile = File(modsDir, shadowJar.name)
             shadowJar.copyTo(targetFile, overwrite = true)
             println("Plugin copied to: ${targetFile.absolutePath}")
         } ?: run {
@@ -95,6 +95,7 @@ open class RunServerTask : DefaultTask() {
         
         javaArgs.addAll(listOf("-jar", jarFile.name))
         javaArgs.addAll(listOf("--assets", assetsPath.get() + "/Assets.zip"))
+        javaArgs.add("--allow-op")
 
         // Start the server process
         val process = ProcessBuilder("java", *javaArgs.toTypedArray())

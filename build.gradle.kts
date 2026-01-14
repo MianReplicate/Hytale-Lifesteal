@@ -9,6 +9,7 @@ version = findProperty("pluginVersion") as String
 description = findProperty("pluginDescription") as String
 
 var game_build = findProperty("gameBuild") as String
+var hytalePath = System.getProperty("user.home") + "/AppData/Roaming/Hytale/install/release/package/game/${game_build}/Server/HytaleServer.jar"
 
 repositories {
     mavenLocal()
@@ -17,7 +18,7 @@ repositories {
 
 dependencies {
     // Hytale Server API (provided by server at runtime)
-    compileOnly(files(System.getProperty("user.home") + "/AppData/Roaming/Hytale/install/release/package/game/${game_build}/Server/HytaleServer.jar"))
+    compileOnly(files(hytalePath))
     
     // Common dependencies (will be bundled in JAR)
     implementation("com.google.code.gson:gson:2.10.1")
@@ -30,7 +31,6 @@ dependencies {
 
 // Configure server testing
 runHytale {
-    // TODO: Update this URL when Hytale server is available
     // Using Paper server as placeholder for testing the runServer functionality
     jarPath = System.getProperty("user.home") + "/AppData/Roaming/Hytale/install/release/package/game/${game_build}/Server"
     assetsPath = System.getProperty("user.home") + "/AppData/Roaming/Hytale/install/release/package/game/${game_build}"
@@ -66,7 +66,7 @@ tasks {
         archiveClassifier.set("")
         
         // Relocate dependencies to avoid conflicts
-        relocate("com.google.gson", "com.yourplugin.libs.gson")
+        relocate("com.google.gson", "hytale.mian.libs.gson")
         
         // Minimize JAR size (removes unused classes)
         minimize()
