@@ -27,12 +27,10 @@ public class LSSystem extends EntityTickingSystem {
         this.config = config;
     }
 
-    public void applyModifier(Ref<EntityStore> ref){
-        Store<EntityStore> store = ref.getStore();
-
-        store.ensureAndGetComponent(ref, EntityStatsModule.get().getEntityStatMapComponentType())
+    public void applyModifier(Ref<EntityStore> ref, CommandBuffer buffer){
+        ((EntityStatMap)buffer.ensureAndGetComponent(ref, EntityStatsModule.get().getEntityStatMapComponentType()))
                 .putModifier(DefaultEntityStatTypes.getHealth(), KEY, new StaticModifier(Modifier.ModifierTarget.MAX, StaticModifier.CalculationType.ADDITIVE,
-                        store.ensureAndGetComponent(ref, LSComponents.get().LS_COMPONENT).getHealthDifference()));
+                        ((LSComponent)buffer.ensureAndGetComponent(ref, LSComponents.get().LS_COMPONENT)).getHealthDifference()));
     }
 
     @Override
@@ -43,7 +41,7 @@ public class LSSystem extends EntityTickingSystem {
         var modifier = ((EntityStatMap) buffer.getComponent(entityRef, EntityStatsModule.get().getEntityStatMapComponentType())).getModifier(DefaultEntityStatTypes.getHealth(), KEY);
 
         if(modifier == null || ((StaticModifier) modifier).getAmount() != healthComponent.getHealthDifference())
-            applyModifier(entityRef);
+            applyModifier(entityRef, buffer);
     }
 
     @Override

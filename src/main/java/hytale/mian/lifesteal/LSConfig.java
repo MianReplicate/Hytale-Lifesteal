@@ -10,9 +10,14 @@ public class LSConfig {
                     (config, integer, extraInfo) -> config.stealAmount = integer,
                     (config, extraInfo) -> config.stealAmount)
             .add()
+            .append(new KeyedCodec<Boolean>("EarnLifeFromNonPlayers", Codec.BOOLEAN),
+                    (config, aBoolean, extraInfo) -> config.earnLifeFromNonPlayers = aBoolean,
+                    (config, extraInfo) -> config.earnLifeFromNonPlayers)
+            .add()
             .build();
 
     private int stealAmount = 10;
+    private boolean earnLifeFromNonPlayers = false;
 
     public LSConfig(){
 
@@ -20,5 +25,9 @@ public class LSConfig {
 
     public int getStealAmount(){
         return stealAmount;
+    }
+
+    public boolean canEarnLifeFromNonPlayers(){
+        return earnLifeFromNonPlayers;
     }
 }
