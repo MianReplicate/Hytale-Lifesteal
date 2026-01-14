@@ -4,9 +4,11 @@ plugins {
     id("run-hytale")
 }
 
-group = findProperty("pluginGroup") as String? ?: "com.example"
-version = findProperty("pluginVersion") as String? ?: "1.0.0"
-description = findProperty("pluginDescription") as String? ?: "A Hytale plugin template"
+group = findProperty("pluginGroup") as String
+version = findProperty("pluginVersion") as String
+description = findProperty("pluginDescription") as String
+
+var game_build = findProperty("gameBuild") as String
 
 repositories {
     mavenLocal()
@@ -15,7 +17,7 @@ repositories {
 
 dependencies {
     // Hytale Server API (provided by server at runtime)
-    compileOnly(files("libs/hytale-server.jar"))
+    compileOnly(files(System.getProperty("user.home") + "/AppData/Roaming/Hytale/install/release/package/game/${game_build}/Server/HytaleServer.jar"))
     
     // Common dependencies (will be bundled in JAR)
     implementation("com.google.code.gson:gson:2.10.1")
@@ -30,7 +32,8 @@ dependencies {
 runHytale {
     // TODO: Update this URL when Hytale server is available
     // Using Paper server as placeholder for testing the runServer functionality
-    jarUrl = "https://fill-data.papermc.io/v1/objects/d5f47f6393aa647759f101f02231fa8200e5bccd36081a3ee8b6a5fd96739057/paper-1.21.10-115.jar"
+    jarPath = System.getProperty("user.home") + "/AppData/Roaming/Hytale/install/release/package/game/${game_build}/Server"
+    assetsPath = System.getProperty("user.home") + "/AppData/Roaming/Hytale/install/release/package/game/${game_build}"
 }
 
 tasks {

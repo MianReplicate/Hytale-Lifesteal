@@ -1,17 +1,17 @@
 {
-  "Group": "TemplatePlugin",
-  "Name": "TemplatePlugin",
+  "Group": "Mian",
+  "Name": "Lifesteal",
   "Version": "1.0.0",
-  "Description": "A Hytale plugin template",
+  "Description": "Hytale",
   "Authors": [
     {
-      "Name": "YourName",
-      "Email": "your.email@example.com",
-      "Url": "https://your-website.com"
+      "Name": "MianReplicate",
+      "Email": "docgoosenn@gmail.com",
+      "Url": "https://github.com/MianReplicate/"
     }
   ],
-  "Website": "https://github.com/yourusername/hytale-plugin-template",
-  "Main": "com.example.templateplugin.TemplatePlugin",
+  "Website": "https://github.com/MianReplicate/Hytale-Lifesteal",
+  "Main": "hytale.mian.lifesteal.Lifesteal",
   "ServerVersion": "*",
   "Dependencies": {},
   "OptionalDependencies": {},

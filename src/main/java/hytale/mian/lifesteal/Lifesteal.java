@@ -1,4 +1,4 @@
-package com.example.templateplugin;
+package hytale.mian.lifesteal;
 
 /**
  * Main plugin class.
@@ -8,14 +8,14 @@ package com.example.templateplugin;
  * @author YourName
  * @version 1.0.0
  */
-public class TemplatePlugin {
+public class Lifesteal {
 
-    private static TemplatePlugin instance;
+    private static Lifesteal instance;
     
     /**
      * Constructor - Called when plugin is loaded.
      */
-    public TemplatePlugin() {
+    public Lifesteal() {
         instance = this;
         System.out.println("[TemplatePlugin] Plugin loaded!");
     }
@@ -48,7 +48,7 @@ public class TemplatePlugin {
     /**
      * Get plugin instance.
      */
-    public static TemplatePlugin getInstance() {
+    public static Lifesteal getInstance() {
         return instance;
     }
 }

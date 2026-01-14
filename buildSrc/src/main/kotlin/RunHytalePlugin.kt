@@ -5,8 +5,6 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import java.io.File
-import java.net.URI
-import java.security.MessageDigest
 
 /**
  * Custom Gradle plugin for automated Hytale server testing.
@@ -28,7 +26,8 @@ open class RunHytalePlugin : Plugin<Project> {
             "runServer", 
             RunServerTask::class.java
         ) {
-            jarUrl.set(extension.jarUrl)
+            jarPath.set(extension.jarPath)
+            assetsPath.set(extension.assetsPath)
             group = "hytale"
             description = "Downloads and runs the Hytale server with your plugin"
         }
@@ -46,16 +45,20 @@ open class RunHytalePlugin : Plugin<Project> {
  * Extension for configuring the RunHytale plugin.
  */
 open class RunHytaleExtension {
-    var jarUrl: String = "https://example.com/hytale-server.jar"
+    var jarPath: String = "https://example.com/hytale-server.jar"
+    var assetsPath: String = ""
 }
 
 /**
- * Task that downloads, sets up, and runs a Hytale server with the plugin.
+ * Task that sets up, and runs a Hytale server with the plugin.
  */
 open class RunServerTask : DefaultTask() {
 
     @Input
-    val jarUrl = project.objects.property(String::class.java)
+    val jarPath = project.objects.property(String::class.java)
+
+    @Input
+    val assetsPath = project.objects.property(String::class.java)
 
     @TaskAction
     fun run() {
@@ -63,40 +66,10 @@ open class RunServerTask : DefaultTask() {
         val runDir = File(project.projectDir, "run").apply { mkdirs() }
         val pluginsDir = File(runDir, "plugins").apply { mkdirs() }
         val jarFile = File(runDir, "server.jar")
-
-        // Cache directory for downloaded server JARs
-        val cacheDir = File(
-            project.layout.buildDirectory.asFile.get(), 
-            "hytale-cache"
-        ).apply { mkdirs() }
-
-        // Compute hash of URL for caching
-        val urlHash = MessageDigest.getInstance("SHA-256")
-            .digest(jarUrl.get().toByteArray())
-            .joinToString("") { "%02x".format(it) }
-        val cachedJar = File(cacheDir, "$urlHash.jar")
-
-        // Download server JAR if not cached
-        if (!cachedJar.exists()) {
-            println("Downloading Hytale server from ${jarUrl.get()}")
-            try {
-                URI.create(jarUrl.get()).toURL().openStream().use { input ->
-                    cachedJar.outputStream().use { output ->
-                        input.copyTo(output)
-                    }
-                }
-                println("Server JAR downloaded and cached")
-            } catch (e: Exception) {
-                println("ERROR: Failed to download server JAR")
-                println("Make sure the jarUrl in build.gradle.kts is correct")
-                println("Error: ${e.message}")
-                return
-            }
-        } else {
-            println("Using cached server JAR")
-        }
+        val cachedJar = File(jarPath.get(), "HytaleServer.jar")
 
         // Copy server JAR to run directory
+
         cachedJar.copyTo(jarFile, overwrite = true)
 
         // Copy plugin JAR to plugins folder
@@ -121,6 +94,7 @@ open class RunServerTask : DefaultTask() {
         }
         
         javaArgs.addAll(listOf("-jar", jarFile.name))
+        javaArgs.addAll(listOf("--assets", assetsPath.get() + "/Assets.zip"))
 
         // Start the server process
         val process = ProcessBuilder("java", *javaArgs.toTypedArray())
