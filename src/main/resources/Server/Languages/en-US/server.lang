@@ -1,0 +1,4 @@
+lifesteal.banned=You've lost too much health! You are now banished from this universe until further notice.
+lifesteal.earned_max_health=GAINED {number} HEALTH!
+lifesteal.new_max_health=Max Health: {old_max} -> {new_max}
+lifesteal.nothing_to_gain=No health to gain from this player!

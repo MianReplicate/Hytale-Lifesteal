@@ -12,33 +12,37 @@ import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntitySta
 import com.hypixel.hytale.server.core.modules.entitystats.modifier.Modifier;
 import com.hypixel.hytale.server.core.modules.entitystats.modifier.StaticModifier;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import hytale.mian.lifesteal.Lifesteal;
 import org.jetbrains.annotations.Nullable;
 
 public class LSComponent implements Component<EntityStore> {
     public static final BuilderCodec<LSComponent> CODEC;
-    private int healthDifference;
+    private float healthDifference;
 
     public static ComponentType<EntityStore, LSComponent> getComponentType(){
         return LSComponents.get().LS_COMPONENT;
     }
 
     protected LSComponent(){
-
+        this(Lifesteal.config.get().getStartAmount());
     }
 
-    public LSComponent(int healthDifference){
+    public LSComponent(float healthDifference){
         this.healthDifference = healthDifference;
     }
 
-    public void addHealthDifference(int healthDifference){
-        this.healthDifference += healthDifference;
+    public void addHealthDifference(float healthDifference){
+        setHealthDifference(this.healthDifference + healthDifference);
     }
 
-    public void setHealthDifference(int healthDifference){
-        this.healthDifference = healthDifference;
+    public void setHealthDifference(float healthDifference){
+        float cap = Lifesteal.config.get().getCapAmount();
+        float min = Lifesteal.config.get().getMinAmount();
+
+        this.healthDifference = Math.max(Math.min(healthDifference, Lifesteal.config.get().hasCap() ? cap : Float.MAX_VALUE), Lifesteal.config.get().hasMin() ? min : Float.MIN_VALUE);
     }
 
-    public int getHealthDifference(){
+    public float getHealthDifference(){
         return this.healthDifference;
     }
 
@@ -49,7 +53,7 @@ public class LSComponent implements Component<EntityStore> {
 
     static {
         CODEC = BuilderCodec.<LSComponent>builder(LSComponent.class, LSComponent::new)
-                .append(new KeyedCodec<Integer>("HealthDifference", Codec.INTEGER),
+                .append(new KeyedCodec<Float>("HealthDifference", Codec.FLOAT),
                         (lsComponent, health) -> lsComponent.healthDifference = health,
                         (lsComponent -> lsComponent.healthDifference))
                 .add()

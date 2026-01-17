@@ -1,0 +1,5 @@
+lifesteal.set_hp_success=Successfully changed {player}'s stolen health to {amount}
+lifesteal.set_hp_failure=Failed to change {player}'s stolen health because {player} is not currently in a world!
+
+lifesteal.get_hp_success={player} has {amount} stolen health
+lifesteal.get_hp_failure=Failed to get {player}'s stolen health because {player} is not currently in a world!
