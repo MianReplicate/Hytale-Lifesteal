@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 // TODO: weapon for lifestealing, ores and items ofc for gaining max health
-// TODO: reviving (timer, item)
+// TODO: reviving (item)
 public class Lifesteal extends JavaPlugin {
     public static final Logger LOGGER = Logger.getLogger("Lifesteal");
     public static Config<LSConfig> config;
@@ -35,10 +35,9 @@ public class Lifesteal extends JavaPlugin {
         super.setup();
         this.config.save();
         new LSComponents(this);
-        this.getEntityStoreRegistry().registerSystem(new LSSystem());
         this.getEntityStoreRegistry().registerSystem(new ReduceMaxHealth());
+        this.getEntityStoreRegistry().registerSystem(new LSSystem());
         this.getCommandRegistry().registerCommand(new LSCommand());
-        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, (event) -> event.getPlayerRef().getStore().ensureComponent(event.getPlayerRef(), LSComponent.getComponentType()));
 
         PermissionsModule.get().addGroupPermission("OP", Set.of("command.lifesteal.has_op"));
     }

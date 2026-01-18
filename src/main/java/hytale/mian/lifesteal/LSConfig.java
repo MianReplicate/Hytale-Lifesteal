@@ -76,10 +76,6 @@ public class LSConfig {
         return capAmount != -1;
     }
 
-    public boolean hasMin(){
-        return minAmount != -1;
-    }
-
     public int getAutoRevive(){
         return reviveAfter;
     }

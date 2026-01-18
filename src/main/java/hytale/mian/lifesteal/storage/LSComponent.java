@@ -13,6 +13,7 @@ public class LSComponent implements Component<EntityStore> {
     public static final BuilderCodec<LSComponent> CODEC;
     private float healthDifference;
     private boolean isBanned;
+    private boolean lostHealth;
 
     public static ComponentType<EntityStore, LSComponent> getComponentType(){
         return LSComponents.get().LS_COMPONENT;
@@ -26,15 +27,19 @@ public class LSComponent implements Component<EntityStore> {
         this.healthDifference = healthDifference;
     }
 
-    public void addHealthDifference(float healthDifference){
-        setHealthDifference(this.healthDifference + healthDifference);
+    public boolean addHealthDifference(float healthDifference){
+        return setHealthDifference(this.healthDifference + healthDifference);
     }
 
-    public void setHealthDifference(float healthDifference){
+    public boolean setHealthDifference(float healthDifference){
         float cap = Lifesteal.config.get().getCapAmount();
         float min = Lifesteal.config.get().getMinAmount();
 
-        this.healthDifference = Math.max(Math.min(healthDifference, Lifesteal.config.get().hasCap() ? cap : Float.MAX_VALUE), Lifesteal.config.get().hasMin() ? min : Float.MIN_VALUE);
+        this.healthDifference = Math.max(Math.min(healthDifference, Lifesteal.config.get().hasCap() ? cap : Float.MAX_VALUE), min);
+
+        if(this.healthDifference != healthDifference)
+            return false; // can't go to that amount
+        return true;
     }
 
     public float getHealthDifference(){
@@ -47,6 +52,14 @@ public class LSComponent implements Component<EntityStore> {
 
     public boolean isBanned(){
         return this.isBanned;
+    }
+
+    public void setLostHealth(boolean lostHealth){
+        this.lostHealth = lostHealth;
+    }
+
+    public boolean hasLostHealth(){
+        return this.lostHealth;
     }
 
     @Override
@@ -63,6 +76,10 @@ public class LSComponent implements Component<EntityStore> {
                 .append(new KeyedCodec<Boolean>("IsBanned", Codec.BOOLEAN),
                         (lsComponent, isBanned) -> lsComponent.isBanned = isBanned,
                         LSComponent::isBanned)
+                .add()
+                .append(new KeyedCodec<Boolean>("LostHealth", Codec.BOOLEAN),
+                        (lsComponent, lostHealth) -> lsComponent.lostHealth = lostHealth,
+                        LSComponent::hasLostHealth)
                 .add()
                 .build();
     }
