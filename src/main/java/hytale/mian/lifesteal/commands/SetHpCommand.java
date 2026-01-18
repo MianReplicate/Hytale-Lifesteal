@@ -24,24 +24,24 @@ public class SetHpCommand extends CommandBase {
     OptionalArg<List<PlayerRef>> players;
 
     public SetHpCommand(){
-        super("sethp", "Set the amount of stolen health someone has!");
+        super("sethp", "command.lifesteal.set_hp.desc");
         this.setPermissionGroup(null);
 
-        amount = this.withRequiredArg("amount", "Amount to use", ArgTypes.FLOAT).addValidator(Validators.insideRange(Lifesteal.config.get().getMinAmount() - 1, Lifesteal.config.get().getCapAmount() + 1));
-        players = this.withListOptionalArg("players", "The players you want to include", ArgTypes.PLAYER_REF);
+        amount = this.withRequiredArg("amount", "command.lifesteal.amount", ArgTypes.FLOAT).addValidator(Validators.range(Lifesteal.config.get().getMinAmount(), Lifesteal.config.get().getCapAmount()));
+        players = this.withListOptionalArg("players", "command.lifesteal.players", ArgTypes.PLAYER_REF);
     }
 
     private void runWithPlayers(CommandContext commandContext, List<PlayerRef> players, float amount){
         players.forEach(playerRef -> {
             Ref<EntityStore> playerEntity = playerRef.getReference();
-            playerEntity.getStore().getExternalData().getWorld().execute(() -> {
-                if(playerEntity != null){
+            if(playerEntity != null){
+                playerEntity.getStore().getExternalData().getWorld().execute(() -> {
                     playerEntity.getStore().ensureAndGetComponent(playerEntity, LSComponent.getComponentType()).setHealthDifference(amount);
                     commandContext.sendMessage(Message.translation("command.lifesteal.set_hp_success").param("player", playerRef.getUsername()).param("amount", amount));
-                    return;
-                }
+                });
+            } else {
                 commandContext.sendMessage(Message.translation("command.lifesteal.set_hp_failure").param("player", playerRef.getUsername()));
-            });
+            }
         });
     }
 

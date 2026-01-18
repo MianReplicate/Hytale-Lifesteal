@@ -4,6 +4,7 @@ import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.permissions.PermissionsModule;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.util.Config;
 import hytale.mian.lifesteal.commands.LSCommand;
 import hytale.mian.lifesteal.storage.LSComponent;
@@ -17,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 // TODO: weapon for lifestealing, ores and items ofc for gaining max health
-// TODO: reviving
+// TODO: reviving (timer, item)
 public class Lifesteal extends JavaPlugin {
     public static final Logger LOGGER = Logger.getLogger("Lifesteal");
     public static Config<LSConfig> config;
@@ -39,6 +40,6 @@ public class Lifesteal extends JavaPlugin {
         this.getCommandRegistry().registerCommand(new LSCommand());
         this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, (event) -> event.getPlayerRef().getStore().ensureComponent(event.getPlayerRef(), LSComponent.getComponentType()));
 
-        PermissionsModule.get().addGroupPermission("OP", Set.of("command.lifesteal.get_hp.has_op"));
+        PermissionsModule.get().addGroupPermission("OP", Set.of("command.lifesteal.has_op"));
     }
 }

@@ -1,5 +1,10 @@
+lifesteal.set_hp.desc=Sets the amount of stolen health for select player(s)
 lifesteal.set_hp_success=Successfully changed {player}'s stolen health to {amount}
 lifesteal.set_hp_failure=Failed to change {player}'s stolen health because {player} is not currently in a world!
 
+lifesteal.amount=Amount to use
+lifesteal.players=The players to include
+
+lifesteal.get_hp.desc=Gets the amount of stolen health for select player(s)
 lifesteal.get_hp_success={player} has {amount} stolen health
 lifesteal.get_hp_failure=Failed to get {player}'s stolen health because {player} is not currently in a world!

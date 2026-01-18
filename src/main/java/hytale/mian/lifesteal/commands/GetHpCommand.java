@@ -20,23 +20,23 @@ public class GetHpCommand extends CommandBase {
     OptionalArg<List<PlayerRef>> players;
 
     public GetHpCommand(){
-        super("gethp", "Set the amount of stolen health someone has!");
+        super("gethp", "command.lifesteal.get_hp.desc");
         this.setPermissionGroups(GameMode.Adventure.toString(), GameMode.Creative.toString());
 
-        players = this.withListOptionalArg("players", "The players you want to include", ArgTypes.PLAYER_REF).setPermission("command.lifesteal.get_hp.has_op");
+        players = this.withListOptionalArg("players", "command.lifesteal.get_hp.players", ArgTypes.PLAYER_REF).setPermission("command.lifesteal.has_op");
     }
 
     private void runWithPlayers(CommandContext commandContext, List<PlayerRef> players){
         players.forEach(playerRef -> {
             Ref<EntityStore> playerEntity = playerRef.getReference();
-            playerEntity.getStore().getExternalData().getWorld().execute(() -> {
-                if(playerEntity != null){
+            if(playerEntity != null){
+                playerEntity.getStore().getExternalData().getWorld().execute(() -> {
                     float amount = playerEntity.getStore().ensureAndGetComponent(playerEntity, LSComponent.getComponentType()).getHealthDifference();
                     commandContext.sendMessage(Message.translation("command.lifesteal.get_hp_success").param("player", playerRef.getUsername()).param("amount", amount));
-                    return;
-                }
+                });
+            } else {
                 commandContext.sendMessage(Message.translation("command.lifesteal.get_hp_failure").param("player", playerRef.getUsername()));
-            });
+            }
         });
     }
 
