@@ -44,7 +44,7 @@ public class ReduceMaxHealth extends DeathSystems.OnDeathSystem {
     public void checkIfShouldBeBanned(Ref<EntityStore> ref, CommandBuffer buffer){
         PlayerRef player = (PlayerRef) buffer.getComponent(ref, PlayerRef.getComponentType());
         if(player != null){
-            LSComponent healthComponent = (LSComponent) buffer.getComponent(ref, LSComponents.get().LS_COMPONENT);
+            LSComponent healthComponent = (LSComponent) buffer.ensureAndGetComponent(ref, LSComponents.get().LS_COMPONENT);
             UUID uuid = ((UUIDComponent)buffer.getComponent(ref, UUIDComponent.getComponentType())).getUuid();
 
             float currentHp = healthComponent.getHealthDifference();

@@ -4,7 +4,6 @@ import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.permissions.PermissionsModule;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.util.Config;
 import hytale.mian.lifesteal.commands.LSCommand;
 import hytale.mian.lifesteal.storage.LSComponent;
@@ -13,7 +12,6 @@ import hytale.mian.lifesteal.systems.LSSystem;
 import hytale.mian.lifesteal.systems.ReduceMaxHealth;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -38,6 +36,8 @@ public class Lifesteal extends JavaPlugin {
         this.getEntityStoreRegistry().registerSystem(new ReduceMaxHealth());
         this.getEntityStoreRegistry().registerSystem(new LSSystem());
         this.getCommandRegistry().registerCommand(new LSCommand());
+
+        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, (playerEvent) -> playerEvent.getPlayerRef().getStore().ensureComponent(playerEvent.getPlayerRef(), LSComponent.getComponentType()));
 
         PermissionsModule.get().addGroupPermission("OP", Set.of("command.lifesteal.has_op"));
     }
