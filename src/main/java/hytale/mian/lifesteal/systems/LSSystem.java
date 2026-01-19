@@ -43,14 +43,14 @@ public class LSSystem extends EntityTickingSystem {
     public void applyModifier(Ref<EntityStore> ref, CommandBuffer buffer){
         ((EntityStatMap)buffer.ensureAndGetComponent(ref, EntityStatsModule.get().getEntityStatMapComponentType()))
                 .putModifier(DefaultEntityStatTypes.getHealth(), KEY, new StaticModifier(Modifier.ModifierTarget.MAX, StaticModifier.CalculationType.ADDITIVE,
-                        ((LSComponent)buffer.ensureAndGetComponent(ref, LSComponents.get().LS_COMPONENT)).getHealthDifference()));
+                        ((LSComponent)buffer.ensureAndGetComponent(ref, LSComponent.getComponentType())).getHealthDifference()));
     }
 
     @Override
     public void tick(float dt, int index, ArchetypeChunk chunk, Store store, CommandBuffer buffer) {
         Ref<EntityStore> entityRef = chunk.getReferenceTo(index);
 
-        var healthComponent = (LSComponent) buffer.ensureAndGetComponent(entityRef, LSComponents.get().LS_COMPONENT);
+        var healthComponent = (LSComponent) buffer.ensureAndGetComponent(entityRef, LSComponent.getComponentType());
         var modifier = ((EntityStatMap) buffer.ensureAndGetComponent(entityRef, EntityStatsModule.get().getEntityStatMapComponentType())).getModifier(DefaultEntityStatTypes.getHealth(), KEY);
 
         if(modifier == null || ((StaticModifier) modifier).getAmount() != healthComponent.getHealthDifference())
@@ -64,11 +64,11 @@ public class LSSystem extends EntityTickingSystem {
 
     @Override
     public @Nullable Query<EntityStore> getQuery() {
-        return Query.and(PlayerRef.getComponentType());
+        return Query.and(PlayerRef.getComponentType(), LSComponent.getComponentType());
     }
 
-    @Override
-    public @NotNull Set<Dependency> getDependencies() {
-        return Set.of(new SystemDependency(Order.AFTER, ReduceMaxHealth.class));
-    }
+//    @Override
+//    public @NotNull Set<Dependency> getDependencies() {
+//        return Set.of(new SystemDependency(Order.AFTER, ReduceMaxHealth.class));
+//    }
 }
